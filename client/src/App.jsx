@@ -30,7 +30,9 @@ const App = () => {
         </section>
         <ul>
           {documents.map((doc) => (
-            <li key={doc.id}>{doc.title}</li>
+            <li key={doc.id} onClick={() => setSelectedDocument(doc)}>
+              {doc.title}
+            </li>
           ))}
         </ul>
       </div>
