@@ -76,6 +76,12 @@ app.post('/api/documents', (request, response) => {
     response.json(newDoc)
 })
 
+app.delete('/api/documents/:id', (request, response) => {
+    const id = request.params.id
+    documents = documents.filter(doc => doc.id !== id)
+    response.status(204).end()
+})
+
 const PORT = 3001
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)

@@ -29,12 +29,16 @@ const App = () => {
       updatedAt: new Date().toISOString()
     };
 
-    axios
-      .post("http://localhost:3001/api/documents", docObject)
-      .then((response) => {
-        setDocuments(documents.concat(response.data));
-        setSelectedDocument(response.data);
-      });
+    axios.post(baseUrl, docObject).then((response) => {
+      setDocuments(documents.concat(response.data));
+      setSelectedDocument(response.data);
+    });
+  };
+
+  const handleDelete = (id, e) => {
+    e.stopPropagation();
+    axios.delete(`${baseUrl}/${id}`);
+    setDocuments(documents.filter((doc) => doc.id !== id));
   };
 
   useEffect(() => {
@@ -65,6 +69,7 @@ const App = () => {
           {documents.map((doc) => (
             <li key={doc.id} onClick={() => setSelectedDocument(doc)}>
               {doc.title}
+              <button onClick={(e) => handleDelete(doc.id, e)}>Delete</button>
             </li>
           ))}
         </ul>
