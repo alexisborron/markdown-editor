@@ -11,6 +11,15 @@ const App = () => {
     setSelectedDocument({ ...selectedDocument, content: e.target.value });
   };
 
+  const handleSave = (id) => {
+    const url = `${baseUrl}/${id}`;
+    axios.put(url, selectedDocument).then((response) => {
+      setDocuments(
+        documents.map((doc) => (doc.id === id ? response.data : doc))
+      );
+    });
+  };
+
   useEffect(() => {
     axios.get(baseUrl).then((response) => setDocuments(response.data));
   }, []);
@@ -19,6 +28,12 @@ const App = () => {
     <>
       <div>
         <h1>Markdown</h1>
+        <button
+          disabled={!selectedDocument}
+          onClick={() => handleSave(selectedDocument.id)}
+        >
+          Save document
+        </button>
         <textarea
           value={selectedDocument ? selectedDocument.content : ""}
           onChange={handleChange}

@@ -1,11 +1,12 @@
 const express = require('express')
 const cors = require('cors')
+
 const app = express()
 
 app.use(express.json())
 app.use(cors())
 
-const documents = [
+let documents = [
     {
         id: "1",
         title: "Getting Started with React",
@@ -53,6 +54,17 @@ app.get('/', (request, response) => {
 })
 app.get('/api/documents', (request, response) => {
     response.json(documents)
+})
+
+app.put('/api/documents/:id', (request, response) => {
+    const id = request.params.id
+    const body = request.body
+
+    documents = documents.map(doc =>
+        doc.id === id ? body : doc
+    )
+
+    response.json(body)
 })
 
 const PORT = 3001
