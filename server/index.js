@@ -58,13 +58,22 @@ app.get('/api/documents', (request, response) => {
 
 app.put('/api/documents/:id', (request, response) => {
     const id = request.params.id
-    const body = request.body
+    const updatedDoc = request.body
 
     documents = documents.map(doc =>
-        doc.id === id ? body : doc
+        doc.id === id ? updatedDoc : doc
     )
 
-    response.json(body)
+    response.json(updatedDoc)
+})
+
+app.post('/api/documents', (request, response) => {
+    const newDoc = request.body
+    newDoc.id = (Math.floor(Math.random() * 1_000_000_000)).toString()
+
+    documents = documents.concat(newDoc)
+
+    response.json(newDoc)
 })
 
 const PORT = 3001

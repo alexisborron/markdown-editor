@@ -20,6 +20,23 @@ const App = () => {
     });
   };
 
+  const handleCreate = () => {
+    const docObject = {
+      title: "Untitled document",
+      tags: [],
+      content: "",
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    };
+
+    axios
+      .post("http://localhost:3001/api/documents", docObject)
+      .then((response) => {
+        setDocuments(documents.concat(response.data));
+        setSelectedDocument(response.data);
+      });
+  };
+
   useEffect(() => {
     axios.get(baseUrl).then((response) => setDocuments(response.data));
   }, []);
@@ -28,6 +45,7 @@ const App = () => {
     <>
       <div>
         <h1>Markdown</h1>
+        <button onClick={handleCreate}>New Document</button>
         <button
           disabled={!selectedDocument}
           onClick={() => handleSave(selectedDocument.id)}
