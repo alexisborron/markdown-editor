@@ -58,7 +58,21 @@ app.get('/api/documents', (request, response) => {
 
 app.put('/api/documents/:id', (request, response) => {
     const id = request.params.id
-    const updatedDoc = request.body
+    const body = request.body
+
+    const doc = documents.find(doc => doc.id === id)
+
+    if (!doc) {
+        return response.status(404).end()
+    }
+
+    const updatedDoc = {
+        id: doc.id,
+        title: body.title || doc.title,
+        content: body.content !== undefined ? body.content : doc.content, tags: body.tags || doc.tags,
+        createdAt: doc.createdAt,
+        updatedAt: new Date().toISOString()
+    }
 
     documents = documents.map(doc =>
         doc.id === id ? updatedDoc : doc
@@ -68,18 +82,29 @@ app.put('/api/documents/:id', (request, response) => {
 })
 
 app.post('/api/documents', (request, response) => {
-    const newDoc = request.body
-    newDoc.id = (Math.floor(Math.random() * 1_000_000_000)).toString()
+    const body = request.body
+
+    const newDoc = {
+        id: (Math.floor(Math.random() * 1_000_000_000)).toString(),
+        title: body.title || "Untitled document",
+        content: body.content || "",
+        tags: body.tags || [],
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+    }
 
     documents = documents.concat(newDoc)
-
     response.json(newDoc)
 })
 
 app.delete('/api/documents/:id', (request, response) => {
     const id = request.params.id
-    documents = documents.filter(doc => doc.id !== id)
-    response.status(204).end()
+    if (documents.find(doc => doc.id === id)) {
+        documents = documents.filter(doc => doc.id !== id)
+        response.status(204).end()
+    } else {
+        response.status(404).end()
+    }
 })
 
 const PORT = 3001

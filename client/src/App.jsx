@@ -8,63 +8,96 @@ const App = () => {
   const [selectedDocument, setSelectedDocument] = useState(null);
 
   const handleChange = (e) => {
+    if (!selectedDocument) return;
     setSelectedDocument({ ...selectedDocument, content: e.target.value });
   };
 
   const handleSave = (id) => {
     const url = `${baseUrl}/${id}`;
-    axios.put(url, selectedDocument).then((response) => {
-      setDocuments(
-        documents.map((doc) => (doc.id === id ? response.data : doc))
-      );
-    });
+    axios
+      .put(url, selectedDocument)
+      .then((response) => {
+        setDocuments((docs) =>
+          docs.map((doc) => (doc.id === id ? response.data : doc))
+        );
+      })
+      .catch((error) => {
+        console.error("Error saving document", error);
+        alert("Failed to save document");
+      });
   };
 
   const handleCreate = () => {
-    const docObject = {
-      title: "Untitled document",
-      tags: [],
-      content: "",
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    };
-
-    axios.post(baseUrl, docObject).then((response) => {
-      setDocuments(documents.concat(response.data));
-      setSelectedDocument(response.data);
-    });
+    axios
+      .post(baseUrl, {})
+      .then((response) => {
+        setDocuments((docs) => docs.concat(response.data));
+        setSelectedDocument(response.data);
+      })
+      .catch((error) => {
+        console.error("Error creating document", error);
+        alert("Failed to create document");
+      });
   };
 
   const handleDelete = (id, e) => {
     e.stopPropagation();
-    axios.delete(`${baseUrl}/${id}`);
-    setDocuments(documents.filter((doc) => doc.id !== id));
+
+    if (window.confirm("Delete this document?")) {
+      axios
+        .delete(`${baseUrl}/${id}`)
+        .then(() => {
+          setDocuments((docs) => docs.filter((doc) => doc.id !== id));
+          if (selectedDocument?.id === id) {
+            setSelectedDocument(null);
+          }
+        })
+        .catch((error) => {
+          if (error.response?.status === 404) {
+            setDocuments((docs) => docs.filter((doc) => doc.id !== id));
+          } else {
+            alert("Failed to delete document");
+          }
+        });
+    }
   };
 
   useEffect(() => {
-    axios.get(baseUrl).then((response) => setDocuments(response.data));
+    axios
+      .get(baseUrl)
+      .then((response) => setDocuments(response.data))
+      .catch((error) => {
+        console.error("Error fetching documents", error);
+        alert("Failed to load documents");
+      });
   }, []);
 
   return (
     <>
       <div>
-        <h1>Markdown</h1>
-        <button onClick={handleCreate}>New Document</button>
-        <button
-          disabled={!selectedDocument}
-          onClick={() => handleSave(selectedDocument.id)}
-        >
-          Save document
-        </button>
-        <textarea
-          value={selectedDocument ? selectedDocument.content : ""}
-          onChange={handleChange}
-        />
-        <section>
-          <ReactMarkdown>
-            {selectedDocument ? selectedDocument.content : ""}
-          </ReactMarkdown>
-        </section>
+        <div className="header">
+          <h1>Markdown</h1>
+          <div>
+            <button onClick={handleCreate}>New Document</button>
+            <button
+              disabled={!selectedDocument}
+              onClick={() => handleSave(selectedDocument.id)}
+            >
+              Save document
+            </button>
+          </div>
+        </div>
+        <div className="container">
+          <textarea
+            value={selectedDocument ? selectedDocument.content : ""}
+            onChange={handleChange}
+          />
+          <section>
+            <ReactMarkdown>
+              {selectedDocument ? selectedDocument.content : ""}
+            </ReactMarkdown>
+          </section>
+        </div>
         <ul>
           {documents.map((doc) => (
             <li key={doc.id} onClick={() => setSelectedDocument(doc)}>
