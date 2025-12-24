@@ -1,0 +1,129 @@
+/* reset */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+*:not(dialog) {
+  margin: 0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    interpolate-size: allow-keywords;
+  }
+}
+
+body {
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
+
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  overflow-wrap: break-word;
+}
+
+p {
+  text-wrap: pretty;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  text-wrap: balance;
+}
+
+#root,
+#__next {
+  isolation: isolate;
+}
+
+/* design tokens */
+:root {
+  /* neutrals (greys) */
+  --clr-grey-1000: hsl(225, 9%, 9%);
+  --clr-grey-900: hsl(216, 8%, 12%);
+  --clr-grey-800: hsl(220, 7%, 18%);
+  --clr-grey-700: hsl(216, 9%, 23%);
+  --clr-grey-600: hsl(216, 8%, 38%);
+  --clr-grey-500: hsl(213, 4%, 51%);
+  --clr-grey-400: hsl(222, 9%, 78%);
+  --clr-grey-300: hsl(0, 0%, 89%);
+  --clr-grey-200: hsl(0, 0%, 96%);
+  --clr-grey-100: hsl(0, 0%, 100%);
+
+  /* primary */
+  --clr-primary: hsl(13, 75%, 58%);
+  --clr-primary-light: hsl(21, 86%, 67%);
+
+  /* font families */
+  --ff-app-heading: "Roboto", sans-serif;
+  --ff-preview: "Roboto Slab", serif;
+  --ff-editor: "Roboto Mono", monospace;
+}
+
+/* global/base styles */
+body {
+  font: 400 0.8125rem/1.2 var(--ff-app-heading);
+  color: var(--clr-grey-700);
+}
+
+h1 {
+  font: 700 2rem/1.2 var(--ff-preview);
+}
+h2 {
+  font: 300 1.75rem/1.2 var(--ff-preview);
+}
+h3 {
+  font: 700 1.5rem/1.2 var(--ff-preview);
+}
+h4 {
+  font: 700 1.25rem/1.2 var(--ff-preview);
+}
+h5 {
+  font: 700 1rem/1.2 var(--ff-preview);
+}
+h6 {
+  font: 700 0.875rem/1.2 var(--ff-preview);
+}
+
+.heading-m {
+  font: 400 0.9375rem/1.2 var(--ff-app-heading);
+}
+
+.heading-s {
+  font: 400 0.875rem/1.2 var(--ff-app-heading);
+}
+
+.markdown-window {
+  font: 400 0.875rem/1.714 var(--ff-editor);
+}
+
+.preview-window {
+  font: 400 0.875rem/1.714 var(--ff-preview);
+}

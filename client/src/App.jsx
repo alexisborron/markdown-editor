@@ -87,10 +87,11 @@ const App = () => {
         </div>
         <div className="container">
           <textarea
+            className="markdown-window"
             value={selectedDocument ? selectedDocument.content : ""}
             onChange={handleChange}
           />
-          <section>
+          <section className="preview-window">
             <ReactMarkdown>
               {selectedDocument ? selectedDocument.content : ""}
             </ReactMarkdown>
