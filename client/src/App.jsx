@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
-import axios from "axios";
-const baseUrl = "http://localhost:3001/api/documents";
+import documentService from "./services/documents";
 
 const App = () => {
   const [documents, setDocuments] = useState([]);
@@ -13,12 +12,11 @@ const App = () => {
   };
 
   const handleSave = (id) => {
-    const url = `${baseUrl}/${id}`;
-    axios
-      .put(url, selectedDocument)
-      .then((response) => {
+    documentService
+      .update(id, selectedDocument)
+      .then((updatedDoc) => {
         setDocuments((docs) =>
-          docs.map((doc) => (doc.id === id ? response.data : doc))
+          docs.map((doc) => (doc.id === id ? updatedDoc : doc))
         );
       })
       .catch((error) => {
@@ -28,11 +26,11 @@ const App = () => {
   };
 
   const handleCreate = () => {
-    axios
-      .post(baseUrl, {})
-      .then((response) => {
-        setDocuments((docs) => docs.concat(response.data));
-        setSelectedDocument(response.data);
+    documentService
+      .create()
+      .then((newDoc) => {
+        setDocuments((docs) => docs.concat(newDoc));
+        setSelectedDocument(newDoc);
       })
       .catch((error) => {
         console.error("Error creating document", error);
@@ -44,8 +42,8 @@ const App = () => {
     e.stopPropagation();
 
     if (window.confirm("Delete this document?")) {
-      axios
-        .delete(`${baseUrl}/${id}`)
+      documentService
+        .remove(id)
         .then(() => {
           setDocuments((docs) => docs.filter((doc) => doc.id !== id));
           if (selectedDocument?.id === id) {
@@ -63,9 +61,9 @@ const App = () => {
   };
 
   useEffect(() => {
-    axios
-      .get(baseUrl)
-      .then((response) => setDocuments(response.data))
+    documentService
+      .getAll()
+      .then((docs) => setDocuments(docs))
       .catch((error) => {
         console.error("Error fetching documents", error);
         alert("Failed to load documents");
