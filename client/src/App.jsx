@@ -27,7 +27,7 @@ const App = () => {
 
   const handleCreate = () => {
     documentService
-      .create()
+      .create({})
       .then((newDoc) => {
         setDocuments((docs) => docs.concat(newDoc));
         setSelectedDocument(newDoc);
