@@ -63,6 +63,10 @@ h6 {
   isolation: isolate;
 }
 
+button {
+  border: none;
+}
+
 /* design tokens */
 :root {
   /* neutrals (greys) */
@@ -113,11 +117,13 @@ h6 {
 }
 
 .heading-m {
-  font: 400 0.9375rem/1.2 var(--ff-app-heading);
+  font: 400 0.9375rem var(--ff-app-heading);
 }
 
 .heading-s {
-  font: 400 0.875rem/1.2 var(--ff-app-heading);
+  font: 500 0.875rem var(--ff-app-heading);
+  text-transform: uppercase;
+  letter-spacing: 2px;
 }
 
 .markdown-window {
@@ -126,4 +132,16 @@ h6 {
 
 .preview-window {
   font: 400 0.875rem/1.714 var(--ff-preview);
+}
+
+.app {
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
+}
+
+.main {
+  width: 100%;
+  transition: transform 0.3s ease-in-out;
 }

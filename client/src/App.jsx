@@ -1,10 +1,13 @@
 import { useState, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
 import documentService from "./services/documents";
+import Sidebar from "./components/Sidebar";
+import menu from "./assets/icon-menu.svg";
 
 const App = () => {
   const [documents, setDocuments] = useState([]);
   const [selectedDocument, setSelectedDocument] = useState(null);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   const handleChange = (e) => {
     if (!selectedDocument) return;
@@ -38,9 +41,7 @@ const App = () => {
       });
   };
 
-  const handleDelete = (id, e) => {
-    e.stopPropagation();
-
+  const handleDelete = (id) => {
     if (window.confirm("Delete this document?")) {
       documentService
         .remove(id)
@@ -72,39 +73,43 @@ const App = () => {
 
   return (
     <>
-      <div>
-        <div className="header">
-          <h1>Markdown</h1>
+      <div className="app">
+        <Sidebar
+          isSidebarOpen={isSidebarOpen}
+          handleCreate={handleCreate}
+          documents={documents}
+          setSelectedDocument={setSelectedDocument}
+        />
+        <main className="main">
+          <header>
+            <div>
+              <button onClick={() => setIsSidebarOpen(!isSidebarOpen)}>
+                <img src={menu} alt="Open menu" />
+              </button>
+              <button onClick={() => handleDelete(selectedDocument.id)}>
+                Delete
+              </button>
+              <button
+                disabled={!selectedDocument}
+                onClick={() => handleSave(selectedDocument.id)}
+              >
+                Save document
+              </button>
+            </div>
+          </header>
           <div>
-            <button onClick={handleCreate}>New Document</button>
-            <button
-              disabled={!selectedDocument}
-              onClick={() => handleSave(selectedDocument.id)}
-            >
-              Save document
-            </button>
+            <textarea
+              className="main__markdown-window"
+              value={selectedDocument ? selectedDocument.content : ""}
+              onChange={handleChange}
+            />
+            <section className="main__preview-window">
+              <ReactMarkdown>
+                {selectedDocument ? selectedDocument.content : ""}
+              </ReactMarkdown>
+            </section>
           </div>
-        </div>
-        <div className="container">
-          <textarea
-            className="markdown-window"
-            value={selectedDocument ? selectedDocument.content : ""}
-            onChange={handleChange}
-          />
-          <section className="preview-window">
-            <ReactMarkdown>
-              {selectedDocument ? selectedDocument.content : ""}
-            </ReactMarkdown>
-          </section>
-        </div>
-        <ul>
-          {documents.map((doc) => (
-            <li key={doc.id} onClick={() => setSelectedDocument(doc)}>
-              {doc.title}
-              <button onClick={(e) => handleDelete(doc.id, e)}>Delete</button>
-            </li>
-          ))}
-        </ul>
+        </main>
       </div>
     </>
   );

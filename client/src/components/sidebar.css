@@ -1,0 +1,84 @@
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 15.625rem;
+  height: 100vh;
+  background: var(--clr-grey-900);
+  padding: 1.6875rem 1.5rem;
+  transform: translateX(-100%);
+  transition: transform 0.3s ease-in-out;
+  z-index: 10;
+}
+
+.sidebar--open {
+  transform: translateX(0);
+}
+
+.sidebar__header {
+  color: var(--clr-grey-500);
+}
+
+.sidebar__logo {
+  margin-bottom: 1.688rem;
+}
+
+.sidebar__new-btn {
+  padding: 0.625rem 2.75rem 0.625rem 2.6875rem;
+  margin-top: 1.5rem;
+  background: var(--clr-primary);
+  color: var(--clr-grey-100);
+  border-radius: 4px;
+
+  &:hover {
+    background-color: var(--clr-primary-light);
+  }
+}
+
+.sidebar__doc-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.625rem;
+  margin: 1.5rem 0;
+  padding: 0;
+  list-style: none;
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+}
+
+.sidebar__doc-list-item {
+  display: flex;
+  align-items: center;
+  color: var(--clr-grey-100);
+  position: relative;
+  padding-left: 2rem;
+  cursor: pointer;
+
+  &::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    width: 1rem;
+    height: 1rem;
+    background-image: url("../assets/icon-document.svg");
+    background-size: contain;
+    background-repeat: no-repeat;
+  }
+}
+
+.sidebar__doc-list-item-details {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.sidebar__doc-list-item-date {
+  color: var(--clr-grey-500);
+}
+
+.sidebar--open ~ .main {
+  transform: translateX(15.625rem);
+}
