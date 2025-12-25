@@ -11,6 +11,7 @@
 
 @media (prefers-reduced-motion: no-preference) {
   html {
+    scroll-behavior: smooth;
     interpolate-size: allow-keywords;
   }
 }
@@ -49,14 +50,6 @@ h6 {
 p {
   text-wrap: pretty;
 }
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  text-wrap: balance;
-}
 
 #root,
 #__next {
@@ -64,7 +57,10 @@ h6 {
 }
 
 button {
+  background: none;
   border: none;
+  padding: 0;
+  cursor: pointer;
 }
 
 /* design tokens */
@@ -97,23 +93,52 @@ body {
   color: var(--clr-grey-700);
 }
 
-h1 {
-  font: 700 2rem/1.2 var(--ff-preview);
+*:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--clr-primary-light);
+  z-index: 100;
 }
-h2 {
-  font: 300 1.75rem/1.2 var(--ff-preview);
-}
-h3 {
-  font: 700 1.5rem/1.2 var(--ff-preview);
-}
-h4 {
-  font: 700 1.25rem/1.2 var(--ff-preview);
-}
-h5 {
-  font: 700 1rem/1.2 var(--ff-preview);
-}
+
+h1,
+h2,
+h3,
+h4,
+h5,
 h6 {
-  font: 700 0.875rem/1.2 var(--ff-preview);
+  text-wrap: balance;
+  font-family: var(--ff-preview);
+  color: var(--clr-grey-700);
+  line-height: 1.2;
+}
+
+h1 {
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+h2 {
+  font-size: 1.75rem;
+  font-weight: 300;
+}
+
+h3 {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+h4 {
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+h5 {
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+h6 {
+  font-size: 0.875rem;
+  font-weight: 700;
 }
 
 .heading-m {
@@ -123,25 +148,5 @@ h6 {
 .heading-s {
   font: 500 0.875rem var(--ff-app-heading);
   text-transform: uppercase;
-  letter-spacing: 2px;
-}
-
-.markdown-window {
-  font: 400 0.875rem/1.714 var(--ff-editor);
-}
-
-.preview-window {
-  font: 400 0.875rem/1.714 var(--ff-preview);
-}
-
-.app {
-  width: 100%;
-  height: 100vh;
-  overflow: hidden;
-  position: relative;
-}
-
-.main {
-  width: 100%;
-  transition: transform 0.3s ease-in-out;
+  letter-spacing: 0.125rem;
 }

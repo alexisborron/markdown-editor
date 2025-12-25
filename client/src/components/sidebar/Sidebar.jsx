@@ -1,5 +1,5 @@
-import logo from "../assets/logo.svg";
-import { formatDate } from "../utilities/formatDate";
+import logo from "../../assets/logo.svg";
+import { formatDate } from "../../utilities/formatDate";
 import "./sidebar.css";
 
 const Sidebar = ({

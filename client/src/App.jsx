@@ -1,13 +1,17 @@
 import { useState, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
 import documentService from "./services/documents";
-import Sidebar from "./components/Sidebar";
-import menu from "./assets/icon-menu.svg";
+import Sidebar from "./components/sidebar/Sidebar";
+import Header from "./components/header/Header";
+import showPreviewIcon from "./assets/icon-show-preview.svg";
+import hidePreviewIcon from "./assets/icon-hide-preview.svg";
+import "./App.css";
 
 const App = () => {
   const [documents, setDocuments] = useState([]);
   const [selectedDocument, setSelectedDocument] = useState(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isEditorOpen, setIsEditorOpen] = useState(false);
 
   const handleChange = (e) => {
     if (!selectedDocument) return;
@@ -34,6 +38,7 @@ const App = () => {
       .then((newDoc) => {
         setDocuments((docs) => docs.concat(newDoc));
         setSelectedDocument(newDoc);
+        setIsEditorOpen(true);
       })
       .catch((error) => {
         console.error("Error creating document", error);
@@ -64,7 +69,12 @@ const App = () => {
   useEffect(() => {
     documentService
       .getAll()
-      .then((docs) => setDocuments(docs))
+      .then((docs) => {
+        setDocuments(docs);
+        if (docs.length > 0) {
+          setSelectedDocument(docs[0]);
+        }
+      })
       .catch((error) => {
         console.error("Error fetching documents", error);
         alert("Failed to load documents");
@@ -72,46 +82,52 @@ const App = () => {
   }, []);
 
   return (
-    <>
-      <div className="app">
-        <Sidebar
+    <div className="app">
+      <Sidebar
+        isSidebarOpen={isSidebarOpen}
+        handleCreate={handleCreate}
+        documents={documents}
+        setSelectedDocument={setSelectedDocument}
+      />
+      <main className="main">
+        <Header
+          handleDelete={handleDelete}
+          handleSave={handleSave}
           isSidebarOpen={isSidebarOpen}
-          handleCreate={handleCreate}
-          documents={documents}
-          setSelectedDocument={setSelectedDocument}
+          setIsSidebarOpen={setIsSidebarOpen}
+          selectedDocument={selectedDocument}
         />
-        <main className="main">
-          <header>
-            <div>
-              <button onClick={() => setIsSidebarOpen(!isSidebarOpen)}>
-                <img src={menu} alt="Open menu" />
-              </button>
-              <button onClick={() => handleDelete(selectedDocument.id)}>
-                Delete
-              </button>
-              <button
-                disabled={!selectedDocument}
-                onClick={() => handleSave(selectedDocument.id)}
-              >
-                Save document
-              </button>
-            </div>
-          </header>
-          <div>
-            <textarea
-              className="main__markdown-window"
-              value={selectedDocument ? selectedDocument.content : ""}
-              onChange={handleChange}
+        <div className="main__window-header">
+          <span className="heading-s" aria-live="polite">
+            {isEditorOpen ? "MARKDOWN" : "PREVIEW"}
+          </span>
+          <button
+            onClick={() => setIsEditorOpen(!isEditorOpen)}
+            aria-label={isEditorOpen ? "Show preview" : "Show editor"}
+          >
+            <img
+              src={isEditorOpen ? showPreviewIcon : hidePreviewIcon}
+              alt={isEditorOpen ? "Click to preview" : "Click to edit"}
             />
-            <section className="main__preview-window">
-              <ReactMarkdown>
-                {selectedDocument ? selectedDocument.content : ""}
-              </ReactMarkdown>
-            </section>
-          </div>
-        </main>
-      </div>
-    </>
+          </button>
+        </div>
+        {isEditorOpen ? (
+          <textarea
+            className="main__markdown-window"
+            value={selectedDocument ? selectedDocument.content : ""}
+            onChange={handleChange}
+            placeholder="Start writing your markdown..."
+            disabled={!selectedDocument}
+          />
+        ) : (
+          <section className="main__preview-window">
+            <ReactMarkdown>
+              {selectedDocument ? selectedDocument.content : ""}
+            </ReactMarkdown>
+          </section>
+        )}
+      </main>
+    </div>
   );
 };
 

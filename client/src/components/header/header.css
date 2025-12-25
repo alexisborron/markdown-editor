@@ -1,0 +1,46 @@
+.main__header {
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+  background: var(--clr-grey-800);
+  height: 56px;
+}
+
+.main__header-actions {
+  display: flex;
+  gap: 8px;
+  margin: 8px;
+}
+
+.main__menu-btn {
+  padding: 0 1rem;
+  background: var(--clr-grey-700);
+}
+
+.main__menu-btn img {
+  width: 23px;
+}
+
+.main__save-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  width: 40px;
+  background: var(--clr-primary);
+  border-radius: 4px;
+}
+
+.main__delete-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  width: 40px;
+}
+
+.main__delete-btn:disabled,
+.main__save-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
