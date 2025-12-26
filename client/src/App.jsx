@@ -10,8 +10,24 @@ import "./App.css";
 const App = () => {
   const [documents, setDocuments] = useState([]);
   const [selectedDocument, setSelectedDocument] = useState(null);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isEditorOpen, setIsEditorOpen] = useState(false);
+  const [theme, setTheme] = useState(() => {
+    const saved = localStorage.getItem("theme");
+    if (saved) return saved;
+    return window.matchMedia("(prefers-color-scheme: dark)").matches
+      ? "dark"
+      : "light";
+  });
+
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", theme);
+    localStorage.setItem("theme", theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme((prev) => (prev === "dark" ? "light" : "dark"));
+  };
 
   const handleChange = (e) => {
     if (!selectedDocument) return;
@@ -36,7 +52,7 @@ const App = () => {
     documentService
       .create({})
       .then((newDoc) => {
-        setDocuments((docs) => docs.concat(newDoc));
+        setDocuments((docs) => [newDoc, ...docs]);
         setSelectedDocument(newDoc);
         setIsEditorOpen(true);
       })
@@ -88,6 +104,8 @@ const App = () => {
         handleCreate={handleCreate}
         documents={documents}
         setSelectedDocument={setSelectedDocument}
+        theme={theme}
+        toggleTheme={toggleTheme}
       />
       <main className="main">
         <Header

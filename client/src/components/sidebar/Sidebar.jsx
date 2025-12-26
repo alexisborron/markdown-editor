@@ -6,7 +6,9 @@ const Sidebar = ({
   isSidebarOpen,
   handleCreate,
   documents,
-  setSelectedDocument
+  setSelectedDocument,
+  theme,
+  toggleTheme
 }) => {
   return (
     <aside className={`sidebar ${isSidebarOpen ? "sidebar--open" : ""}`}>
@@ -35,7 +37,14 @@ const Sidebar = ({
           </li>
         ))}
       </ul>
-      <div className="sidebar__toggle">Toggle will go here</div>
+      <label>
+        <input
+          type="checkbox"
+          checked={theme === "dark"}
+          onChange={toggleTheme}
+        />
+        Dark Mode
+      </label>
     </aside>
   );
 };

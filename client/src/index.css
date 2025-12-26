@@ -85,12 +85,50 @@ button {
   --ff-app-heading: "Roboto", sans-serif;
   --ff-preview: "Roboto Slab", serif;
   --ff-editor: "Roboto Mono", monospace;
+
+  /* light theme */
+  --bg-color: var(--clr-grey-100);
+  --text-color: var(--clr-grey-500);
+  --heading-color: var(--clr-grey-700);
+  --code-bg: var(--clr-grey-200);
+  --window-header-bg: var(--clr-grey-200);
+  --icon-color: var(--clr-grey-500);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    --bg-color: var(--clr-grey-1000);
+    --text-color: var(--clr-grey-400);
+    --heading-color: var(--clr-grey-100);
+    --code-bg: var(--clr-grey-800);
+    --window-header-bg: var(--clr-grey-900);
+    --icon-color: var(--clr-grey-400);
+  }
+}
+
+[data-theme="light"] {
+  --bg-color: var(--clr-grey-100);
+  --text-color: var(--clr-grey-500);
+  --heading-color: var(--clr-grey-700);
+  --code-bg: var(--clr-grey-200);
+  --window-header-bg: var(--clr-grey-200);
+  --icon-color: var(--clr-grey-500);
+}
+
+[data-theme="dark"] {
+  --bg-color: var(--clr-grey-1000);
+  --text-color: var(--clr-grey-400);
+  --heading-color: var(--clr-grey-100);
+  --code-bg: var(--clr-grey-800);
+  --window-header-bg: var(--clr-grey-900);
+  --icon-color: var(--clr-grey-400);
 }
 
 /* global/base styles */
 body {
+  background: var(--bg-color);
   font: 400 0.8125rem/1.2 var(--ff-app-heading);
-  color: var(--clr-grey-700);
+  color: var(--text-color);
 }
 
 *:focus-visible {
@@ -103,12 +141,11 @@ h1,
 h2,
 h3,
 h4,
-h5,
-h6 {
+h5 {
   text-wrap: balance;
   font-family: var(--ff-preview);
-  color: var(--clr-grey-700);
   line-height: 1.2;
+  color: var(--heading-color);
 }
 
 h1 {
@@ -137,6 +174,7 @@ h5 {
 }
 
 h6 {
+  color: var(--clr-primary);
   font-size: 0.875rem;
   font-weight: 700;
 }
