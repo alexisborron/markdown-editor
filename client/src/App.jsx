@@ -3,6 +3,7 @@ import ReactMarkdown from "react-markdown";
 import documentService from "./services/documents";
 import Sidebar from "./components/sidebar/Sidebar";
 import Header from "./components/header/Header";
+import useTitleEditor from "./hooks/useTitleEditor";
 import showPreviewIcon from "./assets/icon-show-preview.svg";
 import hidePreviewIcon from "./assets/icon-hide-preview.svg";
 import "./App.css";
@@ -12,29 +13,15 @@ const App = () => {
   const [selectedDocument, setSelectedDocument] = useState(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isEditorOpen, setIsEditorOpen] = useState(true);
-  const [editingDocId, setEditingDocId] = useState(null);
   const [isDarkMode, setIsDarkMode] = useState(() => {
     return window.matchMedia("(prefers-color-scheme: dark)").matches;
   });
-
-  const updateDocumentTitle = (id, newTitle) => {
-    const updatedDocs = documents.map((doc) =>
-      doc.id === id ? { ...doc, title: newTitle } : doc
-    );
-    setDocuments(updatedDocs);
-
-    if (selectedDocument?.id === id) {
-      setSelectedDocument({ ...selectedDocument, title: newTitle });
-    }
-
-    const docToUpdate = updatedDocs.find((doc) => doc.id === id);
-    if (docToUpdate) {
-      documentService.update(id, docToUpdate).catch((error) => {
-        console.error("Error updating title", error);
-        alert("Failed to update document title");
-      });
-    }
-  };
+  const titleEditor = useTitleEditor(
+    selectedDocument,
+    setSelectedDocument,
+    documentService,
+    setDocuments
+  );
 
   const handleChange = (e) => {
     if (!selectedDocument) return;
@@ -62,10 +49,14 @@ const App = () => {
     documentService
       .create({})
       .then((newDoc) => {
-        setDocuments((docs) => [newDoc, ...docs]);
+        setDocuments((docs) => {
+          const updated = [newDoc, ...docs];
+          return updated.sort(
+            (a, b) => new Date(b.updatedAt) - new Date(a.updatedAt)
+          );
+        });
         setSelectedDocument(newDoc);
         setIsEditorOpen(true);
-        setEditingDocId(newDoc.id);
       })
       .catch((error) => {
         console.error("Error creating document", error);
@@ -122,12 +113,10 @@ const App = () => {
         handleCreate={handleCreate}
         documents={documents}
         setSelectedDocument={setSelectedDocument}
-        updateDocumentTitle={updateDocumentTitle}
-        editingDocId={editingDocId}
-        setEditingDocId={setEditingDocId}
         selectedDocument={selectedDocument}
         handleToggle={handleToggle}
         isDarkMode={isDarkMode}
+        titleEditor={titleEditor}
       />
       <main className="main">
         <Header
@@ -136,6 +125,7 @@ const App = () => {
           isSidebarOpen={isSidebarOpen}
           setIsSidebarOpen={setIsSidebarOpen}
           selectedDocument={selectedDocument}
+          titleEditor={titleEditor}
         />
         <div className="main__window-header">
           <span className="heading-s" aria-live="polite">

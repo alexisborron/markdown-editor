@@ -21,6 +21,26 @@
   width: 23px;
 }
 
+.main__menu-title {
+  display: flex;
+  align-items: center;
+  color: var(--clr-grey-100);
+  position: relative;
+  padding: 1rem 1.5rem 1rem 3.5rem;
+  cursor: pointer;
+
+  &::before {
+    content: "";
+    position: absolute;
+    left: 1.5rem;
+    width: 1rem;
+    height: 1rem;
+    background-image: url("../../assets/icon-document.svg");
+    background-size: contain;
+    background-repeat: no-repeat;
+  }
+}
+
 .main__save-btn {
   display: flex;
   align-items: center;

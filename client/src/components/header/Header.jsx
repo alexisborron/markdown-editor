@@ -10,20 +10,58 @@ const Header = ({
   handleSave,
   isSidebarOpen,
   setIsSidebarOpen,
-  selectedDocument
+  selectedDocument,
+  titleEditor
 }) => {
+  const {
+    isEditingTitle,
+    editedTitle,
+    setEditedTitle,
+    saveEdit,
+    startEdit,
+    cancelEdit,
+    editLocation
+  } = titleEditor;
+
   return (
     <header className="main__header">
-      <button
-        className="main__menu-btn"
-        onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-        aria-label={isSidebarOpen ? "Close menu" : "Open menu"}
-      >
-        <img
-          src={isSidebarOpen ? closeIcon : menuIcon}
-          alt={isSidebarOpen ? "Close menu" : "Open menu"}
-        />
-      </button>
+      <div className="flex">
+        <button
+          className="main__menu-btn"
+          onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+          aria-label={isSidebarOpen ? "Close menu" : "Open menu"}
+        >
+          <img
+            src={isSidebarOpen ? closeIcon : menuIcon}
+            alt={isSidebarOpen ? "Close menu" : "Open menu"}
+          />
+        </button>
+        {selectedDocument && (
+          <div className="main__menu-title">
+            {isEditingTitle && editLocation === "header" ? (
+              <input
+                type="text"
+                value={editedTitle}
+                onChange={(e) => setEditedTitle(e.target.value)}
+                onBlur={() => saveEdit(editedTitle)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") saveEdit(editedTitle);
+                  if (e.key === "Escape") cancelEdit();
+                }}
+                autoFocus
+                className="heading-m"
+              />
+            ) : (
+              <span
+                className="heading-m"
+                onDoubleClick={() => startEdit("header")}
+              >
+                {selectedDocument.title}
+              </span>
+            )}
+          </div>
+        )}
+      </div>
       <div className="main__header-actions">
         <button
           title="Delete document"

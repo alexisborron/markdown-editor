@@ -200,3 +200,7 @@ h6 {
   text-transform: uppercase;
   letter-spacing: 0.125rem;
 }
+
+.flex {
+  display: flex;
+}

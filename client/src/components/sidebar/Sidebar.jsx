@@ -1,4 +1,3 @@
-import { useState } from "react";
 import logo from "../../assets/logo.svg";
 import { formatDate } from "../../utilities/formatDate";
 import "./sidebar.css";
@@ -9,39 +8,19 @@ const Sidebar = ({
   documents,
   selectedDocument,
   setSelectedDocument,
-  updateDocumentTitle,
-  editingDocId,
-  setEditingDocId,
   isDarkMode,
-  handleToggle
+  handleToggle,
+  titleEditor
 }) => {
-  const [editValue, setEditValue] = useState("");
-
-  const handleDoubleClick = (doc, e) => {
-    e.stopPropagation();
-    setEditingDocId(doc.id);
-    setEditValue(doc.title);
-  };
-
-  const handleChange = (e) => {
-    setEditValue(e.target.value);
-  };
-
-  const handleKeyDown = (e, doc) => {
-    if (e.key === "Enter") {
-      handleExit(doc);
-    } else if (e.key === "Escape") {
-      setEditingDocId(null);
-    }
-  };
-
-  const handleExit = (doc) => {
-    if (editValue.trim()) {
-      updateDocumentTitle(doc.id, editValue.trim().replace(/\s+/g, "-"));
-    }
-    setEditingDocId(null);
-    setEditValue("");
-  };
+  const {
+    isEditingTitle,
+    editedTitle,
+    setEditedTitle,
+    saveEdit,
+    startEdit,
+    cancelEdit,
+    editLocation
+  } = titleEditor;
 
   return (
     <aside className={`sidebar ${isSidebarOpen ? "sidebar--open" : ""}`}>
@@ -69,20 +48,29 @@ const Sidebar = ({
               <span className="sidebar__doc-list-item-date">
                 {formatDate(doc.updatedAt)}
               </span>
-              {editingDocId === doc.id ? (
+              {isEditingTitle &&
+              editLocation === "sidebar" &&
+              selectedDocument?.id === doc.id ? (
                 <input
-                  placeholder="untitled-document.md"
-                  onKeyDown={(e) => handleKeyDown(e, doc)}
-                  onChange={handleChange}
-                  value={editValue}
-                  onBlur={() => handleExit(doc)}
-                  onClick={(e) => e.stopPropagation()}
+                  type="text"
+                  value={editedTitle}
+                  onChange={(e) => setEditedTitle(e.target.value)}
+                  onBlur={() => saveEdit(editedTitle)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") saveEdit(editedTitle);
+                    if (e.key === "Escape") cancelEdit();
+                  }}
                   autoFocus
+                  className="heading-m"
+                  onClick={(e) => e.stopPropagation()}
                 />
               ) : (
                 <span
                   className="heading-m"
-                  onDoubleClick={(e) => handleDoubleClick(doc, e)}
+                  onDoubleClick={(e) => {
+                    e.stopPropagation();
+                    startEdit("sidebar");
+                  }}
                 >
                   {doc.title}
                 </span>
