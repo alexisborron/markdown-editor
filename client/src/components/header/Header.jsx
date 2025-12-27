@@ -26,6 +26,7 @@ const Header = ({
       </button>
       <div className="main__header-actions">
         <button
+          title="Delete document"
           className="main__delete-btn"
           onClick={() => handleDelete(selectedDocument.id)}
           disabled={!selectedDocument}
@@ -34,6 +35,7 @@ const Header = ({
           <img src={deleteIcon} alt="Delete document" />
         </button>
         <button
+          title="Save document"
           className="main__save-btn"
           disabled={!selectedDocument}
           onClick={() => handleSave(selectedDocument.id)}

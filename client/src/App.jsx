@@ -11,22 +11,29 @@ const App = () => {
   const [documents, setDocuments] = useState([]);
   const [selectedDocument, setSelectedDocument] = useState(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [isEditorOpen, setIsEditorOpen] = useState(false);
-  const [theme, setTheme] = useState(() => {
-    const saved = localStorage.getItem("theme");
-    if (saved) return saved;
-    return window.matchMedia("(prefers-color-scheme: dark)").matches
-      ? "dark"
-      : "light";
+  const [isEditorOpen, setIsEditorOpen] = useState(true);
+  const [editingDocId, setEditingDocId] = useState(null);
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    return window.matchMedia("(prefers-color-scheme: dark)").matches;
   });
 
-  useEffect(() => {
-    document.documentElement.setAttribute("data-theme", theme);
-    localStorage.setItem("theme", theme);
-  }, [theme]);
+  const updateDocumentTitle = (id, newTitle) => {
+    const updatedDocs = documents.map((doc) =>
+      doc.id === id ? { ...doc, title: newTitle } : doc
+    );
+    setDocuments(updatedDocs);
 
-  const toggleTheme = () => {
-    setTheme((prev) => (prev === "dark" ? "light" : "dark"));
+    if (selectedDocument?.id === id) {
+      setSelectedDocument({ ...selectedDocument, title: newTitle });
+    }
+
+    const docToUpdate = updatedDocs.find((doc) => doc.id === id);
+    if (docToUpdate) {
+      documentService.update(id, docToUpdate).catch((error) => {
+        console.error("Error updating title", error);
+        alert("Failed to update document title");
+      });
+    }
   };
 
   const handleChange = (e) => {
@@ -38,9 +45,12 @@ const App = () => {
     documentService
       .update(id, selectedDocument)
       .then((updatedDoc) => {
-        setDocuments((docs) =>
-          docs.map((doc) => (doc.id === id ? updatedDoc : doc))
-        );
+        setDocuments((docs) => {
+          const updated = docs.map((doc) => (doc.id === id ? updatedDoc : doc));
+          return updated.sort(
+            (a, b) => new Date(b.updatedAt) - new Date(a.updatedAt)
+          );
+        });
       })
       .catch((error) => {
         console.error("Error saving document", error);
@@ -55,6 +65,7 @@ const App = () => {
         setDocuments((docs) => [newDoc, ...docs]);
         setSelectedDocument(newDoc);
         setIsEditorOpen(true);
+        setEditingDocId(newDoc.id);
       })
       .catch((error) => {
         console.error("Error creating document", error);
@@ -82,13 +93,20 @@ const App = () => {
     }
   };
 
+  const handleToggle = () => {
+    setIsDarkMode((prev) => !prev);
+  };
+
   useEffect(() => {
     documentService
       .getAll()
       .then((docs) => {
-        setDocuments(docs);
-        if (docs.length > 0) {
-          setSelectedDocument(docs[0]);
+        const sortedDocs = docs.sort(
+          (a, b) => new Date(b.updatedAt) - new Date(a.updatedAt)
+        );
+        setDocuments(sortedDocs);
+        if (sortedDocs.length > 0) {
+          setSelectedDocument(sortedDocs[0]);
         }
       })
       .catch((error) => {
@@ -98,14 +116,18 @@ const App = () => {
   }, []);
 
   return (
-    <div className="app">
+    <div className={`${isDarkMode ? "dark" : "light"} app`}>
       <Sidebar
         isSidebarOpen={isSidebarOpen}
         handleCreate={handleCreate}
         documents={documents}
         setSelectedDocument={setSelectedDocument}
-        theme={theme}
-        toggleTheme={toggleTheme}
+        updateDocumentTitle={updateDocumentTitle}
+        editingDocId={editingDocId}
+        setEditingDocId={setEditingDocId}
+        selectedDocument={selectedDocument}
+        handleToggle={handleToggle}
+        isDarkMode={isDarkMode}
       />
       <main className="main">
         <Header
@@ -117,7 +139,7 @@ const App = () => {
         />
         <div className="main__window-header">
           <span className="heading-s" aria-live="polite">
-            {isEditorOpen ? "MARKDOWN" : "PREVIEW"}
+            {isEditorOpen ? "Markdown" : "Preview"}
           </span>
           <button
             onClick={() => setIsEditorOpen(!isEditorOpen)}

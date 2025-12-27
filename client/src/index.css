@@ -51,6 +51,11 @@ p {
   text-wrap: pretty;
 }
 
+::selection {
+  background: var(--clr-primary);
+  color: var(--clr-grey-100);
+}
+
 #root,
 #__next {
   isolation: isolate;
@@ -86,7 +91,7 @@ button {
   --ff-preview: "Roboto Slab", serif;
   --ff-editor: "Roboto Mono", monospace;
 
-  /* light theme */
+  /* default mode / prefers color scheme light */
   --bg-color: var(--clr-grey-100);
   --text-color: var(--clr-grey-500);
   --heading-color: var(--clr-grey-700);
@@ -96,7 +101,7 @@ button {
 }
 
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme]) {
+  :root {
     --bg-color: var(--clr-grey-1000);
     --text-color: var(--clr-grey-400);
     --heading-color: var(--clr-grey-100);
@@ -106,7 +111,9 @@ button {
   }
 }
 
-[data-theme="light"] {
+/* light/dark modes for toggling theme */
+.light {
+  color-scheme: light;
   --bg-color: var(--clr-grey-100);
   --text-color: var(--clr-grey-500);
   --heading-color: var(--clr-grey-700);
@@ -115,13 +122,18 @@ button {
   --icon-color: var(--clr-grey-500);
 }
 
-[data-theme="dark"] {
+.dark {
+  color-scheme: dark;
   --bg-color: var(--clr-grey-1000);
   --text-color: var(--clr-grey-400);
   --heading-color: var(--clr-grey-100);
   --code-bg: var(--clr-grey-800);
   --window-header-bg: var(--clr-grey-900);
   --icon-color: var(--clr-grey-400);
+}
+
+html {
+  color-scheme: dark light;
 }
 
 /* global/base styles */

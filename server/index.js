@@ -54,7 +54,7 @@ app.post('/api/documents', (request, response) => {
 
     const newDoc = {
         id: (Math.floor(Math.random() * 1_000_000_000)).toString(),
-        title: body.title || "Untitled document",
+        title: body.title || "untitled-document.md",
         content: body.content || "",
         tags: body.tags || [],
         createdAt: new Date().toISOString(),
