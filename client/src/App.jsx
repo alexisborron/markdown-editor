@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
 import documentService from "./services/documents";
-import Sidebar from "./components/sidebar/Sidebar";
-import Header from "./components/header/Header";
+import Sidebar from "./components/Sidebar/Sidebar";
+import Header from "./components/Header/Header";
+import Notification from "./components/Notification/Notification";
 import useTitleEditor from "./hooks/useTitleEditor";
 import showPreviewIcon from "./assets/icon-show-preview.svg";
 import hidePreviewIcon from "./assets/icon-hide-preview.svg";
@@ -13,6 +14,7 @@ const App = () => {
   const [selectedDocument, setSelectedDocument] = useState(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isEditorOpen, setIsEditorOpen] = useState(true);
+  const [notification, setNotification] = useState(null);
   const [isDarkMode, setIsDarkMode] = useState(() => {
     return window.matchMedia("(prefers-color-scheme: dark)").matches;
   });
@@ -38,10 +40,22 @@ const App = () => {
             (a, b) => new Date(b.updatedAt) - new Date(a.updatedAt)
           );
         });
+        setNotification({
+          type: "success",
+          message: "Your document has been saved!"
+        });
+        setTimeout(() => {
+          setNotification(null);
+        }, 3000);
       })
       .catch((error) => {
-        console.error("Error saving document", error);
-        alert("Failed to save document");
+        setNotification({
+          type: "error",
+          message: `Failed to save document. ${error}`
+        });
+        setTimeout(() => {
+          setNotification(null);
+        }, 3000);
       });
   };
 
@@ -57,10 +71,16 @@ const App = () => {
         });
         setSelectedDocument(newDoc);
         setIsEditorOpen(true);
+        titleEditor.startEdit("sidebar", newDoc.title);
       })
       .catch((error) => {
-        console.error("Error creating document", error);
-        alert("Failed to create document");
+        setNotification({
+          type: "error",
+          message: `Failed to create document. ${error}`
+        });
+        setTimeout(() => {
+          setNotification(null);
+        }, 3000);
       });
   };
 
@@ -73,12 +93,25 @@ const App = () => {
           if (selectedDocument?.id === id) {
             setSelectedDocument(null);
           }
+          setNotification({
+            type: "success",
+            message: "Your document has been removed."
+          });
+          setTimeout(() => {
+            setNotification(null);
+          }, 3000);
         })
         .catch((error) => {
           if (error.response?.status === 404) {
             setDocuments((docs) => docs.filter((doc) => doc.id !== id));
           } else {
-            alert("Failed to delete document");
+            setNotification({
+              type: "error",
+              message: `Failed to delete document. ${error}`
+            });
+            setTimeout(() => {
+              setNotification(null);
+            }, 3000);
           }
         });
     }
@@ -108,6 +141,7 @@ const App = () => {
 
   return (
     <div className={`${isDarkMode ? "dark" : "light"} app`}>
+      {notification && <Notification notification={notification} />}
       <Sidebar
         isSidebarOpen={isSidebarOpen}
         handleCreate={handleCreate}

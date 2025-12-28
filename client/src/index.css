@@ -51,11 +51,6 @@ p {
   text-wrap: pretty;
 }
 
-::selection {
-  background: var(--clr-primary);
-  color: var(--clr-grey-100);
-}
-
 #root,
 #__next {
   isolation: isolate;
@@ -203,4 +198,16 @@ h6 {
 
 .flex {
   display: flex;
+}
+
+input {
+  border: none;
+  outline: none;
+}
+
+input:focus,
+input:focus-visible {
+  outline: none;
+  box-shadow: none;
+  border-bottom: 1px solid var(--clr-grey-100); /* Optional: highlight on focus */
 }

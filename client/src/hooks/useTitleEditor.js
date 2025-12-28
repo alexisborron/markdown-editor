@@ -5,9 +5,9 @@ const useTitleEditor = (selectedDocument, setSelectedDocument, documentService, 
     const [editedTitle, setEditedTitle] = useState("");
     const [editLocation, setEditLocation] = useState(null);
 
-    const startEdit = (location) => {
+    const startEdit = (location, initialValue) => {
         if (!selectedDocument) return;
-        setEditedTitle(selectedDocument.title);
+        setEditedTitle(initialValue !== undefined ? initialValue : selectedDocument.title);
         setIsEditingTitle(true);
         setEditLocation(location);
     };
@@ -26,7 +26,6 @@ const useTitleEditor = (selectedDocument, setSelectedDocument, documentService, 
 
         const trimmedTitle = editedTitle.trim();
         const updatedDoc = { ...selectedDocument, title: trimmedTitle };
-
         setSelectedDocument(updatedDoc);
         cancelEdit();
 

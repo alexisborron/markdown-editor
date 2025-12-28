@@ -1,0 +1,17 @@
+.notification {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 1rem 1rem;
+  color: var(--clr-grey-100);
+  font-weight: 500;
+  font-size: 1rem;
+}
+
+.notification--error {
+  background: #800020;
+}
+
+.notification--success {
+  background: #386641;
+}

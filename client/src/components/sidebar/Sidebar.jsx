@@ -60,6 +60,7 @@ const Sidebar = ({
                     if (e.key === "Enter") saveEdit(editedTitle);
                     if (e.key === "Escape") cancelEdit();
                   }}
+                  onFocus={(e) => e.target.select()}
                   autoFocus
                   className="heading-m"
                   onClick={(e) => e.stopPropagation()}
